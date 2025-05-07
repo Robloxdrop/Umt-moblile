@@ -1,6 +1,6 @@
--- Biblioteca da interface
-local Library = loadstring(game:HttpGet("https://gist.githubusercontent.com/VertigoCool99/282c9e98325f6b79299c800df74b2849/raw/d9efe72dc43a11b5237a43e2de71b7038e8bb37b/library.lua"))()
-local Window = Library:CreateWindow({Title=" Ultimate Mining Tycoon",TweenTime=.15,Center=true})
+-- Biblioteca da interface com suporte a toque
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Robloxdrop/Umt-moblile/main/library.lua"))()
+local Window = Library:CreateWindow({Title=" Ultimate Mining Tycoon", TweenTime=.15, Center=true})
 
 -- Botão de toque (interface móvel)
 if game:GetService("UserInputService").TouchEnabled then
@@ -19,9 +19,13 @@ if game:GetService("UserInputService").TouchEnabled then
     ToggleButton.MouseButton1Click:Connect(function()
         Library:Toggle()
     end)
+
+    ToggleButton.TouchTap:Connect(function()
+        Library:Toggle()
+    end)
 end
 
--- Início do script original
+-- (Aqui continua o script original, já adaptado para celular)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
@@ -138,28 +142,24 @@ task.spawn(function()
 end)
 
 -- Settings UI
-local Settings = Window:AddTab("Settings")
-local SettingsUI = Settings:AddLeftGroupbox("UI")
+local SettingsTab = Window:AddTab("Settings")
+local SettingsUI = SettingsTab:AddLeftGroupbox("UI")
 
-local SettingsUnloadButton = SettingsUI:AddButton({Text="Unload",Func=function()
+SettingsUI:AddButton({Text="Unload",Func=function()
     Library:Unload()
 end})
 
--- Esse botão foi substituído pelo botão de toque
--- local SettingsMenuKeyPicker = ...
-
-local SettingsNotiPositionDropdown = SettingsUI:AddDropdown("SettingsNotiPositionDropdown",{Text="Notification Position",Values={"Top_Left","Top_Right","Bottom_Left","Bottom_Right"},Default="Top_Left"})
-SettingsNotiPositionDropdown:OnChanged(function(Value)
+SettingsUI:AddDropdown("SettingsNotiPositionDropdown",{Text="Notification Position",Values={"Top_Left","Top_Right","Bottom_Left","Bottom_Right"},Default="Top_Left"}):OnChanged(function(Value)
     Library.NotificationPosition = Value
 end)
 
 Library.ThemeManager:SetLibrary(Library)
 Library.SaveManager:SetLibrary(Library)
-Library.ThemeManager:ApplyToTab(Settings)
+Library.ThemeManager:ApplyToTab(SettingsTab)
 Library.SaveManager:IgnoreThemeSettings()
 Library.SaveManager:SetIgnoreIndexes({"MenuKeybind","BackgroundColor", "ActiveColor", "ItemBorderColor", "ItemBackgroundColor", "TextColor" , "DisabledTextColor", "RiskyColor"})
 Library.SaveManager:SetFolder('Test')
-Library.SaveManager:BuildConfigSection(Settings)
+Library.SaveManager:BuildConfigSection(SettingsTab)
 
 FirstRun = false
 Library:Notify({Title="Loaded",Text=string.format('Loaded In %.2f seconds', tick()-oldTick),Duration=5})
